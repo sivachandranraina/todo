@@ -1,0 +1,177 @@
+<html ng-app="todoApp">
+
+<head>
+    <title>ToDo - Stick with commitments</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href='http://fonts.googleapis.com/css?family=Raleway:700,400,100,200,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+</head>
+
+<body class="ng-cloak" ng-controller="mainCtrl">
+    <header class="container-fluid">
+        <div class="row header">
+            <div class="col-md-6">
+                <h2>ToDo <small>Stick with commitments</small></h2>
+            </div>
+            <div class="col-md-6">
+                <div class="session-buttons pull-right" ng-hide="proceed">
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#login"><i class="fa fa-user"></i> Login </button>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#signup"><i class="fa fa-user-plus"></i> Signup </button>
+                </div>
+                <div class="session-buttons pull-right dropdown" ng-show="proceed">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <i class="fa fa-user"></i> Howdy, {{user}}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li><a href ng-click="logout()">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="container-fluid">
+        <div class="row" style="background-color: #f5f5f5;">
+            <div class="col-md-offset-3 col-md-6">
+                <input type="text" class="large-text text-box" placeholder="type ToDo here" ng-model="instance.content" ng-keydown="addToDo(instance, $event)">
+                <div ng-show="addon" class="row addon">
+                    <button class="col-xs-4 btn btn-success" ng-hide="instance.completed" ng-click="update(instance, 'true')"><i class="fa fa-check"></i>
+                        <br>Complete</button>
+                    <button class="col-xs-4 btn btn-success" ng-show="instance.completed" ng-click="update(instance, 'false')"><i class="fa fa-refresh"></i>
+                        <br>Not Completed</button>
+                    <button class="col-xs-4 btn btn-danger" ng-click="delete(instance)"><i class="fa fa-trash"></i>
+                        <br>Delete</button>
+                    <button class="col-xs-4 btn btn-default" ng-click="cancel(instance)"><i class="fa fa-times"></i>
+                        <br>Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="text-center">
+                <h3>ToDo <small>List</small></h3>
+                <div ng-show="adminView" class="col-md-offset-3 col-md-6 col-sm-12 col-xs-12">
+                    <h4>Users</h4>
+                    <div class="user-card-wrapper">
+                        <div class="text-center user-card" ng-click="userChange('all')">All</div><div class="text-center user-card" ng-click="userChange(item._id)" ng-repeat="item in users">
+                        {{item.name}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-offset-3 col-md-6 col-sm-12 col-xs-12 list-tab" ng-hide="!showtodos" >
+                    <div class="col-xs-6" ng-click="filter('active')">Active ({{todos.active.length}})</div>
+                    <div class="col-xs-6" ng-click="filter('completed')">Completed ({{todos.completed.length}})</div>
+                </div>
+                <div class="col-md-offset-3 col-md-6 col-sm-12 col-xs-12 text-left">
+                    <div ng-repeat="todo in showtodos" class="card" ng-class="{'completed-line': todo.completed, 'active-line': !todo.completed}" title="You can click the text and edit">
+                        <!-- <input type="checkbox" ng-model="todo.completed" ng-click="split(todo)"> -->
+                        <!-- <i class="fa fa-check activity-icon pull-left" ng-show="editTodo" ng-click="todo.completed =!todo.completed"></i>
+                        <input type="text" class="todo-text-box" ng-model="todo.content" ng-keypress="update(todo, $event, editTodo)" ng-show="editTodo">
+                        <i class="fa fa-trash activity-icon pull-right" ng-show="editTodo" ng-click="delete(todo)"></i> -->
+                        <h5 ng-if="todo.creator.name">{{todo.creator.name}}</h5>
+                        <input type="checkbox" class="checkbox" ng-model="todo.completed" ng-click="update(todo, todo.completed)"><span ng-class="{'line-through': todo.completed, 'big-font': todo.content.length <= 15}" ng-click="editable(todo)" ng-bind="todo.content">
+                    </div>
+                    <div ng-show="showtodos.length <= 0" class="card text-center">No todos found!</div>
+                    <div ng-show="!showtodos" class="text-center"><h4 style="font-size: 68px;">Start listing your todos!<br><small>Stick to commitments</small></h4></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <hr>
+    <footer class="container-fluid">
+        <div class="text-center">
+            Application constructed by <a href="http://sivachandranraina.hol.es">Sivachandran Raina</a>
+        </div>
+    </footer>
+
+    <script src="assets/js/libs/jquery.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="assets/js/libs/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/a1345827d4.js"></script>
+    <script type="text/javascript" src="assets/js/libs/angular.min.js"></script>
+    <script type="text/javascript" src="assets/js/libs/local-storage-module.min.js"></script>
+    <script type="text/javascript" src="assets/js/module.js"></script>
+    <script type="text/javascript" src="assets/js/service.js"></script>
+    <script type="text/javascript" src="assets/js/controller/mainCtrl.js"></script>
+    <!-- Modal -->
+    <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times fa-1"></i></span></button>
+                        <h4 class="modal-title" id="myModalLabel">Secret kinda' stuffs</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form ng-hide="proceed">
+                            <div class="form-group">
+                                <input type="email" class="form-control" placeholder="Email" ng-model="cred.username">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="Password" ng-model="cred.password">
+                            </div>
+                            <div class="text-center">
+                                <p class="text-danger" ng-bind="loginerr"></p>
+                                <button type="submit" ng-click="login(cred)" class="btn btn-block btn-primary">Login</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div> -->
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="signup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times"></i></span></button>
+                        <h4 class="modal-title" id="myModalLabel">Enroll yourself</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form ng-hide="enableLogin">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Name" ng-model="cred.name">
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control" placeholder="Email" ng-model="cred.username">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="Password" ng-model="cred.password">
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-block btn-primary" ng-click="signup(cred)">Signup</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div> -->
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="warning" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times"></i></span></button>
+                        <h4 class="modal-title" id="myModalLabel">Great to see you!</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            Please login and Start creating ToDo(s)!
+                            <br>
+                            <br>
+                            <button class="btn btn-block btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#login"><i class="fa fa-user"></i> Login </button>
+                            <hr>
+                            New to here?
+                            <button class="btn btn-block btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#signup"><i class="fa fa-user-plus"></i> Signup </button>
+                        </div>
+                    </div>
+                    <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div> -->
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>
